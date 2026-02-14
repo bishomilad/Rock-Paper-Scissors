@@ -1,0 +1,15 @@
+body{
+    background-color: aliceblue;
+    opacity: 0.8;
+    background-size: 58px 58px;
+    background-image:  repeating-linear-gradient(0deg, #242125, #242125 2.9000000000000004px, #e5e5f7 2.9000000000000004px, #e5e5f7);
+}
+
+.popup{
+    display: none;
+}
+
+.visible{
+    display: absolute;
+    z-index: 7;
+}
