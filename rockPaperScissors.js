@@ -43,13 +43,13 @@ function getRandom(){
 function parseChoice(choice){
         switch (choice){
         case 0:
-            return "rock";
+            return "🪨";
             break;
         case 1:
-            return "paper";
+            return "📜";
             break;
         case 2:
-            return "scissors"
+            return "✂️"
             break;
         default:
             return NaN;
@@ -72,7 +72,7 @@ function parseChoice(choice){
 function playRound(pChoice, cChoice){   //Plays the game rounds based on the player's choice and CPU's choice
     //qlabel.textContent=""; //removes the previous description
     if(pChoice===cChoice){
-        displayDesc("That's a tie!\n");
+        displayDesc("That's a tie\n");
 
     }else if(calcLoser(pChoice,cChoice)){ //checks if the player is in a losing state
         displayDesc("Ouch!\n");
@@ -93,9 +93,9 @@ function displayDesc(string, add=false){ //replaces the "question" on text with 
 }
 
 function calcLoser(pChoice,cChoice){    //Checks the 3 cases of winning for each choice
-    return (pChoice==="rock" && cChoice==="paper"
-        || pChoice==="paper" && cChoice==="scissors" 
-        || pChoice==="scissors" && cChoice==="rock")
+    return (pChoice==="🪨" && cChoice==="📜"
+        || pChoice==="📜" && cChoice==="✂️" 
+        || pChoice==="✂️" && cChoice==="🪨")
 }
 
 function updateScores(){

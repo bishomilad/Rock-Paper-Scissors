@@ -55,7 +55,29 @@ h1{
     text-align: center;
     justify-self: center;
     margin: auto;
+    user-select: none;
+    padding: 0.5rem 5rem;
 
+
+
+    
+}
+
+h1:hover{
+    animation-name: rotate;
+    animation-duration: 2s;
+    animation-direction: forwards;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes rotate {
+    0%{
+        transform:translateY(0rem)
+    }
+    100%{
+        transform: translateY(-0.5rem);
+    }
+    
 }
 
 .theme{
