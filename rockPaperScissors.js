@@ -1,17 +1,45 @@
 const buttonsfig = document.querySelector('.btndiv');
 const qlabel = document.querySelector(".question");
+const scoreslabel = document.querySelector(".scores");
+const popupdiv = document.querySelector(".popup");
+
+//
+
 console.log(document);
 let currentChoice;
 let humanScore=0;
 let computerScore=0;
-buttonsfig.addEventListener("click",getHumanChoice)
+let rounds = 5;
+let gamestarted = false;
+//buttonsfig.addEventListener("click",getHumanChoice);
+
+async function waitForInput(){
+    return new Promise((resolve,reject)=> {
+        buttonsfig.addEventListener("click", (e)=>{
+            if(e.target.value!==undefined){
+                currentChoice = parseChoice(parseInt(e.target.value));
+                console.log(e.target.value);
+                if(gamestarted===false)
+                    playGame();
+                resolve();
+                }else reject();
+
+               
+        })
+
+    })
+}
+
+
 
 function getComputerChoice(){
-    const choice = parseChoice(getRandom());
+    return parseChoice(getRandom());
 }
 
 function getRandom(){
-    return Math.floor(Math.random()*3);
+    let n = Math.floor(Math.random()*3);
+    console.log(n);
+    return n
 }
 
 function parseChoice(choice){
@@ -31,30 +59,32 @@ function parseChoice(choice){
 }
 
 //user press on one of 3 buttons
+
 function getHumanChoice(e){
     //check when the user clicks
     if(e.target.value!==undefined){
-        currentChoice = parseChoice(e.target.value);
-    } 
+        currentChoice = parseChoice(parseInt(e.target.value));
+        console.log(e.target.value);
+        if(gamestarted===false)
+            playGame();
+    }
 }
 
-//computer chooses a sign
 
 function playRound(pChoice, cChoice){
+    qlabel.textContent="";
     if(pChoice===cChoice){
-        console.log("That's a tie!");
-        qlabel.textContent="That's a tie!";
+        qlabel.textContent="That's a tie!\n";
 
     }else if(calcLoser(pChoice,cChoice)){
-            console.log("CPU wins!");
-            qlabel.textContent="CPU wins!";
-            computerScore++;
-    }else if(calcLoser(cChoice,pChoice)){
-            console.log("You win!");
-            qlabel.textContent="You win!"
-            humanScore++;
-        }
-    
+        qlabel.textContent="Ouch!\n";
+        computerScore++;
+    }else{ 
+        qlabel.textContent="Nice!\n";
+        humanScore++;
+    }
+    qlabel.textContent+=`CPU played ${cChoice}!`;
+    updateScores();
 }
 
 function calcLoser(pChoice,cChoice){
@@ -63,6 +93,48 @@ function calcLoser(pChoice,cChoice){
         || pChoice==="scissors" && cChoice==="rock")
 }
 
-function playGame(){
-    
+function updateScores(){
+    scoreslabel.textContent = `${humanScore} : ${computerScore}`;
 }
+
+async function playGame(){
+    //enables replaying after 5 rounds are over
+    gamestarted=true;
+    while(rounds>0){
+        //important to prevent event delegation from rejecting the promise
+        let keeptrying=false;
+        do{
+            try{
+                await waitForInput();
+                keeptrying=false;
+            }catch{
+                keeptrying=true;
+            }
+        }while(keeptrying)
+
+        playRound(currentChoice,getComputerChoice());
+        rounds--;
+    }
+    compareScores();
+    humanScore=0;
+    computerScore=0;
+    popupdiv.classList.add("visible");
+    popupdiv.classList.remove("popup");
+
+    updateScores();
+    gamestarted=false;
+
+}
+
+function compareScores(){
+    if(humanScore>computerScore)
+        popupdiv.firstChild.textContent="You win!";
+    else if(humanScore<computerScore)
+        popupdiv.firstChild.textContent="You lose!";
+    else popupdiv.firstChild.textContent="It's a tie!";
+    popupdiv.firstChild.textContent+=`\n with a score of ${humanScore}`;
+}
+
+playGame();
+
+

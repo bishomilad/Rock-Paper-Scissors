@@ -53,8 +53,18 @@ h1{
 
 }
 
+.discr{
+    font-size: 1.2rem;
+    transition: font-size 0.5s ease-in;
+}
+
+.discr:hover{
+    font-size: 1.3rem;
+    transition: font-size 1s ease-in;
+}
+
 .theme:hover{
-backdrop-filter: blur(0.6rem);
+backdrop-filter: blur(0.4rem);
 transition: backdrop-filter 0.4s ease-in-out;
 
 }
@@ -62,9 +72,20 @@ transition: backdrop-filter 0.4s ease-in-out;
 .inlinebtn{
     font-size: 5rem;
     border-radius: 4rem;
-    padding: 0.6rem;
+    padding: 0.5rem;
     cursor: pointer;
     backdrop-filter: none;
-    transition: backdrop-filter 0.1s ease-in-out;
+    transition: padding 0.5s ease-out;
     margin: 0.5rem;
+
+}
+
+.inlinebtn:hover{
+    padding: 0.65rem;
+    transition: padding 0.5s ease-in-out;
+}
+
+.scores{
+    font-weight: 900;
+    text-shadow: #3e3c3f 0 0.1rem 0.1rem;
 }
