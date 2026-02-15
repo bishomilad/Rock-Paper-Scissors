@@ -17,7 +17,7 @@ async function waitForInput(){
         buttonsfig.addEventListener("click", (e)=>{
             if(e.target.value!==undefined){
                 currentChoice = parseChoice(parseInt(e.target.value));
-                console.log(e.target.value);
+                //console.log(e.target.value);
                 if(!gamestarted) gamestarted=true;
                 resolve();
                 }else reject();
@@ -35,9 +35,7 @@ function getComputerChoice(){
 }
 
 function getRandom(){
-    let n = Math.floor(Math.random()*3);
-    console.log(n);
-    return n
+    return Math.floor(Math.random()*3);
 }
 
 function parseChoice(choice){
