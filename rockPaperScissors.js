@@ -5,7 +5,6 @@ const popupdiv = document.querySelector(".popup");
 
 //
 
-console.log(document);
 let currentChoice;
 let humanScore=0;
 let computerScore=0;
@@ -19,13 +18,12 @@ async function waitForInput(){
             if(e.target.value!==undefined){
                 currentChoice = parseChoice(parseInt(e.target.value));
                 console.log(e.target.value);
-                if(gamestarted===false)
-                    playGame();
+                if(!gamestarted) gamestarted=true;
                 resolve();
                 }else reject();
 
                
-        })
+        },{once:true})
 
     })
 }
@@ -60,7 +58,7 @@ function parseChoice(choice){
 
 //user press on one of 3 buttons
 
-function getHumanChoice(e){
+/*function getHumanChoice(e){
     //check when the user clicks
     if(e.target.value!==undefined){
         currentChoice = parseChoice(parseInt(e.target.value));
@@ -68,26 +66,33 @@ function getHumanChoice(e){
         if(gamestarted===false)
             playGame();
     }
-}
+}*/
 
 
-function playRound(pChoice, cChoice){
-    qlabel.textContent="";
+function playRound(pChoice, cChoice){   //Plays the game rounds based on the player's choice and CPU's choice
+    //qlabel.textContent=""; //removes the previous description
     if(pChoice===cChoice){
-        qlabel.textContent="That's a tie!\n";
+        displayDesc("That's a tie!\n");
 
-    }else if(calcLoser(pChoice,cChoice)){
-        qlabel.textContent="Ouch!\n";
+    }else if(calcLoser(pChoice,cChoice)){ //checks if the player is in a losing state
+        displayDesc("Ouch!\n");
         computerScore++;
-    }else{ 
-        qlabel.textContent="Nice!\n";
+    }else{                               //checks if the CPU is in a losing state
+        displayDesc("Nice!\n");
         humanScore++;
     }
-    qlabel.textContent+=`CPU played ${cChoice}!`;
+    displayDesc(`CPU played ${cChoice}!`,true);
+    //updating the scores on the interface
     updateScores();
 }
 
-function calcLoser(pChoice,cChoice){
+
+function displayDesc(string, add=false){ //replaces the "question" on text with another description of the turn
+    if(add) (qlabel.textContent+=string);
+    else qlabel.textContent=string;
+}
+
+function calcLoser(pChoice,cChoice){    //Checks the 3 cases of winning for each choice
     return (pChoice==="rock" && cChoice==="paper"
         || pChoice==="paper" && cChoice==="scissors" 
         || pChoice==="scissors" && cChoice==="rock")
@@ -98,41 +103,58 @@ function updateScores(){
 }
 
 async function playGame(){
-    //enables replaying after 5 rounds are over
     gamestarted=true;
-    while(rounds>0){
-        //important to prevent event delegation from rejecting the promise
-        let keeptrying=false;
-        do{
-            try{
-                await waitForInput();
-                keeptrying=false;
-            }catch{
-                keeptrying=true;
-            }
-        }while(keeptrying)
+    while(gamestarted){
+        displayDesc("Choose...");
+        popupdiv.classList.add("popup");
+        popupdiv.classList.remove("visisble");
+        //stops the game after 5 rounds are over
+        while(rounds>0){
+            //important to prevent event delegation from rejecting the promise
+            let keeptrying=false;
+            do{
+                try{
+                    await waitForInput();
+                    keeptrying=false;
+                }catch{
+                    keeptrying=true;
+                }
+            }while(keeptrying)
 
-        playRound(currentChoice,getComputerChoice());
-        rounds--;
+            playRound(currentChoice,getComputerChoice());
+            rounds--;
+        }
+        compareScores();
+        displayDesc("Play again?")
+        updateScores();
+ 
+        popupdiv.classList.add("visible");
+        popupdiv.classList.remove("popup");
+        gamestarted=false
+        await waitForInput();
+        rounds=5
+
+        humanScore=0;
+        computerScore=0;
+        updateScores();
     }
-    compareScores();
-    humanScore=0;
-    computerScore=0;
-    popupdiv.classList.add("visible");
-    popupdiv.classList.remove("popup");
-
-    updateScores();
-    gamestarted=false;
 
 }
 
 function compareScores(){
-    if(humanScore>computerScore)
-        popupdiv.firstChild.textContent="You win!";
-    else if(humanScore<computerScore)
-        popupdiv.firstChild.textContent="You lose!";
-    else popupdiv.firstChild.textContent="It's a tie!";
-    popupdiv.firstChild.textContent+=`\n with a score of ${humanScore}`;
+    let highest
+    if(humanScore>computerScore){
+        popupdiv.firstChild.textContent="You win";
+        highest=humanScore;
+    }else if(humanScore<computerScore){
+        popupdiv.firstChild.textContent="CPU wins";
+        highest=computerScore;
+    }else{
+        popupdiv.firstChild.textContent="It's a tie!";
+        highest=humanScore;
+    }
+    popupdiv.firstChild.textContent+=` 
+        with a score of ${highest}!`;
 }
 
 playGame();
