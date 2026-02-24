@@ -8,7 +8,7 @@ const popupdiv = document.querySelector(".popup");
 let currentChoice;
 let humanScore=0;
 let computerScore=0;
-let rounds = 5;
+//let rounds = 5;
 let gamestarted = false;
 //buttonsfig.addEventListener("click",getHumanChoice);
 
@@ -105,9 +105,7 @@ async function playGame(){
     while(gamestarted){
         displayDesc("Choose...");
         popupdiv.classList.add("popup");
-        popupdiv.classList.remove("visisble");
-        //stops the game after 5 rounds are over
-        while(rounds>0){
+        while(humanScore<5 && computerScore<5){ //makes the game replayes until any score equals 5
             //important to prevent event delegation from rejecting the promise
             let keeptrying=false;
             do{
@@ -120,7 +118,7 @@ async function playGame(){
             }while(keeptrying)
 
             playRound(currentChoice,getComputerChoice());
-            rounds--;
+            //rounds--;
         }
         compareScores();
         displayDesc("Play again?")
@@ -130,7 +128,7 @@ async function playGame(){
         popupdiv.classList.remove("popup");
         gamestarted=false
         await waitForInput();
-        rounds=5
+        //rounds=5
 
         humanScore=0;
         computerScore=0;
